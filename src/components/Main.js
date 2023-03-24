@@ -4,35 +4,40 @@ import { BeatLoader } from 'react-spinners'
 import './style.css'
 
 function Main() {
-    const [user,setUser]= useState({})
+    const [user,setUser]= useState([])
     const [error,setErr]= useState(false)
     const [name,setName]= useState('')
+    const [loading, setLoading]= useState(false)
 
-    const [filter,setFilter]= useState(false)
+
+    // const [filter,setFilter]= useState(false)
     const [idFromButtonClick ,setidFromButtonClick] =useState()
 
    
     const handleClick =()=>{
-        // renderSpinner()
-        setFilter(true);
+         
+        setLoading(true);
         setidFromButtonClick(name);
-        setFilter(false);
-        // if(error===true){
-        //     setFilter(true)
-        // }
+         setLoading(false);
+         setErr(false)
+        
     }
     useEffect(()=>{
-        // setFilter(true)
+   
             axios.get(`https://api.github.com/users/${idFromButtonClick}`)
         .then(res => {
-            // console.log(res);
-            
             setUser(res.data)
-            // setName(true)
-        })
+           
+              }    
+        )
         .catch((err)=> {
-            console.log(err)
-            setErr("Couldn't get user ")
+            // console.log(err)
+            setErr(err.message)
+            // setUser(false)
+        })
+        .finally(()=>{
+             setLoading(false);
+             setErr(false)
         })
        
     },[idFromButtonClick])
@@ -45,9 +50,9 @@ function Main() {
         <input type='text' value={name} onChange={e => setName(e.target.value)} />
         <button onClick={handleClick}  >Search</button>
         {
-            filter &&
-        <BeatLoader color="#36d7b7" />
-        }
+            loading &&
+            <div>A momoent please</div>
+         }
         {
             idFromButtonClick  &&
                 <div>
